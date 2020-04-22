@@ -32,7 +32,11 @@ class MCWAnesthShoutOuts {
 	}
 
 	public function initPlugin() {
+		wp_enqueue_script('mcw-anesth-shout-outs', plugin_dir_url(__FILE__) . 'dist/bundle.js', null, null, true);
+		wp_enqueue_style('mcw-anesth-shout-outs', plugin_dir_url(__FILE__) . 'dist/bundle.css', null, null, true);
 
+
+		add_shortcode('shoutouts-feed', [$this, 'shoutouts_feed_shortcode']);
 	}
 
 	static function extractUserData($user) {
@@ -77,7 +81,7 @@ class MCWAnesthShoutOuts {
 			'methods' => ['GET'],
 			'callback' => function($request) {
 				$users = get_users();
-				return array_map(self::extractUserData, array_values($users));
+				return array_map([self, 'extractUserData'], array_values($users));
 			}
 		]);
 
@@ -112,6 +116,10 @@ class MCWAnesthShoutOuts {
 		global $wpdb;
 
 		return $wpdb->prefix . self::DB_NAMESPACE . '_' . $name;
+	}
+
+	function shoutouts_feed_shortcode($atts) {
+		return '<div id="mcw-anesth-shoutouts-feed"></div>';
 	}
 }
 

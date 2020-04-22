@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "bundle.css",
+  "sources": [
+    "../Shoutout.svelte"
+  ],
+  "sourcesContent": [
+    "<div class=\"shoutout\">\n\t<span class=\"recipient\">{recipient}</span>\n\t<p class=\"message\">{message}</p>\n</div>\n\n<style>\n\t.message {\n\t\twhite-space: pre;\n\t}\n</style>\n\n<script>\n\timport { users } from '../stores.js';\n\n\texport let recipient_id, recipient_writein, message, created_at, updated_at;\n\n\tlet allUsers = [];\n\n\tusers.subscribe(users => {\n\t\tconsole.log(users);\n\t\tallUsers = users;\n\t});\n\n\t$: recipient = recipient_id\n\t\t? (allUsers.find(u => u.id == recipient_id) || {}).name || ''\n\t\t: recipient_writein;\n</script>\n"
+  ],
+  "names": [],
+  "mappings": "AAMC,QAAQ,eAAC,CAAC,AACT,WAAW,CAAE,GAAG,AACjB,CAAC"
+}

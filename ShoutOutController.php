@@ -85,7 +85,22 @@ class ShoutOutController {
 			return new WP_Error('not-found', 'Not found', ['status' => 404]);
 		}
 
-		$results = $wpdb->get_results("SELECT * FROM {$table}", ARRAY_A);
+		$query = "SELECT * FROM {$table} ORDER BY id DESC";
+
+		if (!empty($request->get_param('limit'))) {
+			$query .= ' limit %d';
+			$vals = [
+				$request->get_param('limit')
+			];
+			if (!empty($request->get_param('offset'))) {
+				$query .= ' OFFSET %d';
+				$vals[] = $request->get_param('offset');
+			}
+
+			$query = $wpdb->prepare($query, $vals);
+		}
+
+		$results = $wpdb->get_results($query, ARRAY_A);
 
 		if (!empty(static::JSON_COLUMNS)) {
 			foreach ($results as &$row) {
