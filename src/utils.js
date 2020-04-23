@@ -1,3 +1,5 @@
+/** @format */
+
 export const BASE_URL = '/wp-json/mcw-anesth-shout-outs/v1';
 
 export function getNonce() {
@@ -21,4 +23,3 @@ export const fetchConfig = {
 	headers,
 	credentials: 'same-origin'
 };
-

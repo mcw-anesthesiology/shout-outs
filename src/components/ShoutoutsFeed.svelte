@@ -1,36 +1,43 @@
 <div class="shoutouts-feed">
-	{#await shoutoutsPromise}
-		<p>Loading...</p>
-	{:then shoutouts}
-		{#each shoutouts as shoutout}
-			<Shoutout {...shoutout} />
-		{/each}
-	{:catch err}
-		<p>Error!</p>
-	{/await}
+	{#each $shoutouts as shoutout (shoutout.id)}
+		<Shoutout {...shoutout} />
+	{/each}
+
+	<form>
+		<p>
+			Refreshing every
+			<input type="number" bind:value={intervalSeconds} />
+			seconds
+		</p>
+
+		<label>
+			Limit
+			<input type="number" bind:value={limit} />
+		</label>
+	</form>
 </div>
+
+<style>
+	form {
+		margin-top: 1em;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	p > input {
+		width: 2em;
+	}
+</style>
 
 <script>
 	import Shoutout from './Shoutout.svelte';
 
-	import { BASE_URL, fetchConfig } from '../utils.js';
+	import { watchShoutouts } from '../stores.js';
 
-	let limit = 10;
-	let offset = 0;
+	let limit = 10, intervalSeconds = 5;
+	let interval;
 
-	let params = '';
-	$: {
-		const newParams = new URLSearchParams();
-		if (limit) {
-			newParams.set('limit', limit);
-		}
+	$: interval = intervalSeconds * 1000;
 
-		if (offset) {
-			newParams.set('offset', offset);
-		}
-
-		params = newParams;
-	}
-
-	let shoutoutsPromise = fetch(`${BASE_URL}/shoutouts?${params.toString()}`, fetchConfig).then(r => r.json());
+	$: shoutouts = watchShoutouts({ limit: Number(limit), interval });
 </script>

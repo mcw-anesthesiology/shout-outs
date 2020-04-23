@@ -33,10 +33,11 @@ class MCWAnesthShoutOuts {
 
 	public function initPlugin() {
 		wp_enqueue_script('mcw-anesth-shout-outs', plugin_dir_url(__FILE__) . 'dist/bundle.js', null, null, true);
-		wp_enqueue_style('mcw-anesth-shout-outs', plugin_dir_url(__FILE__) . 'dist/bundle.css', null, null, true);
+		wp_enqueue_style('mcw-anesth-shout-outs', plugin_dir_url(__FILE__) . 'dist/bundle.css', null, null, false);
 
 
 		add_shortcode('shoutouts-feed', [$this, 'shoutouts_feed_shortcode']);
+		add_shortcode('shoutouts-form', [$this, 'shoutouts_form_shortcode']);
 	}
 
 	static function extractUserData($user) {
@@ -74,7 +75,15 @@ class MCWAnesthShoutOuts {
 		register_rest_route(self::API_NAMESPACE, '/user', [
 			'methods' => ['GET'],
 			'callback' => function($request) {
-				return self::extractUserData(wp_get_current_user());
+				$user = wp_get_current_user();
+
+				$return = self::extractUserData($user);
+
+				if (in_array('administrator', $user->roles)) {
+					$return['admin'] = true;
+				}
+
+				return $return;
 			}
 		]);
 		register_rest_route(self::API_NAMESPACE, '/users', [
@@ -120,6 +129,10 @@ class MCWAnesthShoutOuts {
 
 	function shoutouts_feed_shortcode($atts) {
 		return '<div id="mcw-anesth-shoutouts-feed"></div>';
+	}
+
+	function shoutouts_form_shortcode($atts) {
+		return '<div id="mcw-anesth-shoutouts-form"></div>';
 	}
 }
 

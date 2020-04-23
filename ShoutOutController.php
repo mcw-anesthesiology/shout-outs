@@ -108,6 +108,13 @@ class ShoutOutController {
 			}
 		}
 
+		$user = wp_get_current_user();
+		foreach ($results as &$result) {
+			if (in_array('administrator', $user->roles) && $result['created_by'] != $user->ID) {
+				unset($result['created_by']);
+			}
+		}
+
 		return $results;
 	}
 

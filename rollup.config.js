@@ -1,6 +1,7 @@
 import svelte from 'rollup-plugin-svelte';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import babel from 'rollup-plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
 const production = !process.env.ROLLUP_WATCH;
@@ -21,7 +22,8 @@ export default {
 			// a separate file - better for performance
 			css: css => {
 				css.write('dist/bundle.css');
-			}
+			},
+			legacy: production
 		}),
 
 		// If you have external dependencies installed from
@@ -35,6 +37,10 @@ export default {
 		}),
 		commonjs(),
 
+		production && babel({
+			exclude: '**/core-js/**',
+			extensions: ['.js', '.mjs', '.svelte']
+		}),
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
