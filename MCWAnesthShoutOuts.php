@@ -50,7 +50,7 @@ class MCWAnesthShoutOuts {
 	public function initRestApi() {
 		remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
 		add_filter('rest_pre_dispatch', function($result, $server, $request) {
-			if (self::matchesNamespace($request->getRoute())) {
+			if (self::matchesNamespace($request->get_route())) {
 				$user = wp_get_current_user();
 				if (!$user || !$user->ID)
 					return new WP_Error('unauthorized', 'Unauthorized', ['status' => 401]);
