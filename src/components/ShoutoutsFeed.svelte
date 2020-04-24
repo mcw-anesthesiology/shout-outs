@@ -3,18 +3,21 @@
 		<Shoutout {...shoutout} />
 	{/each}
 
-	<form>
-		<p>
-			Refreshing every
-			<input type="number" bind:value={intervalSeconds} />
-			seconds
-		</p>
+	<details>
+		<summary>Feed refresh options</summary>
+		<form>
+			<p>
+				Refreshing every
+				<input type="number" bind:value={intervalSeconds} />
+				seconds
+			</p>
 
-		<label>
-			Limit
-			<input type="number" bind:value={limit} />
-		</label>
-	</form>
+			<label>
+				Limit
+				<input type="number" bind:value={limit} />
+			</label>
+		</form>
+	</details>
 </div>
 
 <style>
