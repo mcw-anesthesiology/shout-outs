@@ -69,7 +69,6 @@
 	}
 
 	.message {
-		white-space: pre;
 		word-break: break-word;
 	}
 

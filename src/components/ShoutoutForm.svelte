@@ -106,15 +106,20 @@
 		flex-direction: row;
 		flex-wrap: wrap;
 		align-items: center;
+		justify-content: center;
 	}
 
 	fieldset > div > span {
 		display: block;
 		margin: 1em;
+		width: 200px;
+		flex-shrink: 2;
+		text-align: center;
 	}
 
 	fieldset > div > label {
-		flex-basis: 200px;
+		width: 200px;
+		max-width: 100%;
 		flex-grow: 1;
 	}
 
