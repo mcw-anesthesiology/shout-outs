@@ -55,6 +55,8 @@ class MCWAnesthShoutOuts {
 				if (!$user || !$user->ID)
 					return new WP_Error('unauthorized', 'Unauthorized', ['status' => 401]);
 			}
+
+			return $result;
 		}, 10, 4);
 
 		add_filter('rest_pre_serve_request', function($served, $response, $request, $server) {
