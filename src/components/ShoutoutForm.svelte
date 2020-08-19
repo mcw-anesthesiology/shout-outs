@@ -46,7 +46,7 @@
 	</fieldset>
 
 	<label>
-		Message
+		I'm sending them a shout-out for
 		<textarea name="message" bind:value={message} disabled={submitting}></textarea>
 	</label>
 
@@ -70,7 +70,7 @@
 		{/await}
 	{:else}
 		<button type="submit" disabled={!isComplete || submitting}>
-			Shout out!
+			Shout-out!
 		</button>
 	{/if}
 </form>
