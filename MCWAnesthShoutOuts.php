@@ -43,7 +43,7 @@ class MCWAnesthShoutOuts {
 	static function extractUserData($user) {
 		return [
 			'id' => $user->ID,
-			'name' => $user->display_name
+			'name' => "{$user->first_name} {$user->last_name}"
 		];
 	}
 
