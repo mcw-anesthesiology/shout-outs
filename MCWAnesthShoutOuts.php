@@ -94,7 +94,7 @@ class MCWAnesthShoutOuts {
 			'methods' => ['GET'],
 			'callback' => function($request) {
 				$users = get_users();
-				$users = array_map([self, 'extractUserData'], array_values($users));
+				$users = array_map([$this, 'extractUserData'], array_values($users));
 
 				usort($users, function ($a, $b) {
 					if ($a['name'] == $b['name']) {
