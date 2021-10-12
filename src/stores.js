@@ -23,14 +23,14 @@ export const users = readable([], set => {
 	return () => {};
 });
 
-const SHOUTOUTS_REFRESH_INTERVAL = 5000;
+const SHOUTOUTS_REFRESH_INTERVAL = 60000;
 
 export const shoutouts = watchShoutouts();
 
 export function watchShoutouts({
 	limit = null,
 	offset = null,
-	interval = SHOUTOUTS_REFRESH_INTERVAL
+	interval = SHOUTOUTS_REFRESH_INTERVAL,
 } = {}) {
 	return readable([], set => {
 		let url = `${BASE_URL}/shoutouts`;

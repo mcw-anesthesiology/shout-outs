@@ -6,14 +6,13 @@
 	<details>
 		<summary>Feed refresh options</summary>
 		<form>
-			<p>
-				Refreshing every
+			<label>
+				Refresh rate (seconds)
 				<input type="number" bind:value={intervalSeconds} />
-				seconds
-			</p>
+			</label>
 
 			<label>
-				Limit
+				Show most recent
 				<input type="number" bind:value={limit} />
 			</label>
 		</form>
@@ -21,14 +20,32 @@
 </div>
 
 <style>
-	form {
+	details {
 		margin-top: 1em;
+	}
+
+	summary {
+		cursor: pointer;
+	}
+
+	form {
 		display: flex;
 		justify-content: space-between;
 	}
 
-	p > input {
-		width: 2em;
+	form {
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	label {
+		flex: 1 1;
+		margin: 0.5em;
+	}
+
+	input {
+		display: block;
+		width: 100%;
 	}
 </style>
 
