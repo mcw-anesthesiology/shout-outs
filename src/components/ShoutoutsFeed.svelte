@@ -37,7 +37,7 @@
 
 	import { watchShoutouts } from '../stores.js';
 
-	let limit = 10, intervalSeconds = 5;
+	let limit = 10, intervalSeconds = 120;
 	let interval;
 
 	$: interval = intervalSeconds * 1000;
