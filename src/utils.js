@@ -29,3 +29,8 @@ export function parseDate(date) {
 	d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
 	return d;
 }
+
+export function toISODate(date) {
+	const s = date.toISOString();
+	return s.substring(0, s.indexOf('T'));
+}

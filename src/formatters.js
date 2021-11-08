@@ -34,14 +34,19 @@ export function formatDateTime(d) {
 	return useFormatter(dateTimeFormatter, d);
 }
 
-export function formatDateTimeRFC3339(d) {
+export function formatDateRFC3339(d) {
 	return `${d.getFullYear().toString().padStart(4, '0')}-${(d.getMonth() + 1)
 		.toString()
-		.padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')} ${d
-		.getHours()
+		.padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+}
+
+export function formatTimeRFC3339(d) {
+	return `${d.getHours().toString().padStart(2, '0')}:${d
+		.getMinutes()
 		.toString()
-		.padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}:${d
-		.getSeconds()
-		.toString()
-		.padStart(2, '0')}`;
+		.padStart(2, '0')}:${d.getSeconds().toString().padStart(2, '0')}`;
+}
+
+export function formatDateTimeRFC3339(d) {
+	return `${formatDateRFC3339(d)} ${formatTimeRFC3339(d)}`;
 }

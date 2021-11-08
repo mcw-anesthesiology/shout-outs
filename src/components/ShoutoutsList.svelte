@@ -1,14 +1,32 @@
 <div class="shoutouts-list">
+	<form>
+		<fieldset>
+			<legend>Submitted</legend>
+
+			<div class="dates-inputs">
+				<label>
+					Start
+					<input type="date" bind:value={startDate} />
+				</label>
+				<span>–</span>
+				<label>
+					End
+					<input type="date" bind:value={endDate} />
+				</label>
+			</div>
+		</fieldset>
+	</form>
+
 	<table>
 		<thead>
 			<tr>
 				<th>Recipient</th>
 				<th>Message</th>
-				<th>Created</th>
+				<th>Submitted</th>
 			</tr>
 		</thead>
 		<tbody>
-			{#each $shoutouts as shoutout}
+			{#each shoutouts as shoutout}
 				<tr>
 					<th>{getRecipient($usersMap, shoutout)}</th>
 					<td>{shoutout.message}</td>
@@ -26,6 +44,28 @@
 </div>
 
 <style>
+	form {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		margin-bottom: 1em;
+	}
+
+	label {
+		display: inline-block;
+	}
+
+	label input {
+		box-sizing: border-box;
+		display: block;
+		width: 100%;
+	}
+
+	.dates-inputs span {
+		display: inline-block;
+		margin: 0 0.5em;
+	}
+
 	table {
 		border-collapse: collapse;
 		width: 100%;
@@ -47,11 +87,32 @@
 </style>
 
 <script>
-	import { shoutouts, usersMap } from '../stores.js';
-	import { parseDate } from '../utils.js'
+	import { usersMap } from '../stores.js';
+	import { parseDate, BASE_URL, fetchConfig } from '../utils.js'
 	import { formatDateTimeRFC3339 } from '../formatters.js';
 
 	import RichDate from './RichDate.svelte';
+
+	let shoutouts = [];
+	let startDate, endDate;
+
+	$: fetchShoutouts(startDate, endDate);
+
+	function fetchShoutouts(startDate, endDate) {
+		const params = new URLSearchParams();
+		if (startDate) {
+			params.set('start', startDate);
+		}
+		if (endDate) {
+			params.set('end', endDate);
+		}
+
+		fetch(`${BASE_URL}/shoutouts?${params.toString()}`, fetchConfig)
+			.then(r => r.json())
+			.then(s => {
+				shoutouts = s;
+			});
+	}
 
 	function getRecipient($usersMap, shoutout) {
 		if (shoutout.recipient_id) {
@@ -74,8 +135,8 @@
 
 	let csv;
 	$: csv = [
-		'Recipient,Message,Created',
-		...$shoutouts.map(shoutout => [
+		'Recipient,Message,Submitted',
+		...shoutouts.map(shoutout => [
 				getRecipient($usersMap, shoutout),
 				shoutout.message,
 				formatDateTimeRFC3339(parseDate(shoutout.created_at)),

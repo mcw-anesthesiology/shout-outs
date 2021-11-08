@@ -85,18 +85,39 @@ class ShoutOutController {
 			return new WP_Error('not-found', 'Not found', ['status' => 404]);
 		}
 
-		$query = "SELECT * FROM {$table} ORDER BY id DESC";
+		$query = "SELECT * FROM {$table}";
+		$vals = [];
+
+		$after = $request->get_param('start') ?? $request->get_param('after');
+		if (!empty($after)) {
+			$whereClauses[] = 'date(created_at) >= %s';
+			$vals[] = $after;
+		}
+
+		$before = $request->get_param('end') ?? $request->get_param('before');
+		if (!empty($before)) {
+			$whereClauses[] = 'date(created_at) <= %s';
+			$vals[] = $before;
+		}
+
+		if (!empty($whereClauses)) {
+			$query .= ' WHERE ' . implode(' and ', $whereClauses);
+		}
+
+		$query .= ' ORDER BY id DESC';
 
 		if (!empty($request->get_param('limit'))) {
 			$query .= ' limit %d';
-			$vals = [
-				$request->get_param('limit')
-			];
+			$vals[] = $request->get_param('limit');
+
 			if (!empty($request->get_param('offset'))) {
 				$query .= ' OFFSET %d';
 				$vals[] = $request->get_param('offset');
 			}
 
+		}
+
+		if (!empty($vals)) {
 			$query = $wpdb->prepare($query, $vals);
 		}
 
