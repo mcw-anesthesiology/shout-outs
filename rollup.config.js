@@ -12,18 +12,21 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'dist/bundle.js'
+		file: 'dist/bundle.js',
 	},
 	plugins: [
 		svelte({
-			// enable run-time checks when not in production
-			dev: !production,
-			// we'll extract any component CSS out into
-			// a separate file - better for performance
-			css: css => {
-				css.write('dist/bundle.css');
+			emitCss: false,
+			compilerOptions: {
+				// enable run-time checks when not in production
+				dev: !production,
+				// we'll extract any component CSS out into
+				// a separate file - better for performance
+				css: css => {
+					css.write('dist/bundle.css');
+				},
+				legacy: production,
 			},
-			legacy: production
 		}),
 
 		// If you have external dependencies installed from
@@ -33,20 +36,21 @@ export default {
 		// https://github.com/rollup/plugins/tree/master/packages/commonjs
 		resolve({
 			browser: true,
-			dedupe: ['svelte']
+			dedupe: ['svelte'],
 		}),
 		commonjs(),
 
-		production && babel({
-			exclude: '**/core-js/**',
-			extensions: ['.js', '.mjs', '.svelte']
-		}),
+		production &&
+			babel({
+				exclude: '**/core-js/**',
+				extensions: ['.js', '.mjs', '.svelte'],
+			}),
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
-		production && terser()
+		production && terser(),
 	],
 	watch: {
-		clearScreen: false
-	}
+		clearScreen: false,
+	},
 };

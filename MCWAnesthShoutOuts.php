@@ -32,12 +32,9 @@ class MCWAnesthShoutOuts {
 	}
 
 	public function initPlugin() {
-		wp_enqueue_script('mcw-anesth-shout-outs', plugin_dir_url(__FILE__) . 'dist/bundle.js', null, null, true);
-		wp_enqueue_style('mcw-anesth-shout-outs', plugin_dir_url(__FILE__) . 'dist/bundle.css', null, null, false);
-
-
 		add_shortcode('shoutouts-feed', [$this, 'shoutouts_feed_shortcode']);
 		add_shortcode('shoutouts-form', [$this, 'shoutouts_form_shortcode']);
+		add_shortcode('shoutouts-list', [$this, 'shoutouts_list_shortcode']);
 	}
 
 	static function extractUserData($user) {
@@ -141,12 +138,27 @@ class MCWAnesthShoutOuts {
 		return $wpdb->prefix . self::DB_NAMESPACE . '_' . $name;
 	}
 
+	static function enqueueAssets() {
+		wp_enqueue_script('mcw-anesth-shout-outs', plugin_dir_url(__FILE__) . 'dist/bundle.js', null, null, true);
+		wp_enqueue_style('mcw-anesth-shout-outs', plugin_dir_url(__FILE__) . 'dist/bundle.css', null, null, false);
+	}
+
 	function shoutouts_feed_shortcode($atts) {
+		self::enqueueAssets();
+
 		return '<div id="mcw-anesth-shoutouts-feed"></div>';
 	}
 
 	function shoutouts_form_shortcode($atts) {
+		self::enqueueAssets();
+
 		return '<div id="mcw-anesth-shoutouts-form"></div>';
+	}
+
+	function shoutouts_list_shortcode($atts) {
+		self::enqueueAssets();
+
+		return '<div id="mcw-anesth-shoutouts-list"></div>';
 	}
 }
 

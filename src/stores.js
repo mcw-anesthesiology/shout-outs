@@ -1,6 +1,6 @@
 /** @format */
 
-import { readable } from 'svelte/store';
+import { readable, derived } from 'svelte/store';
 import { BASE_URL, fetchConfig } from './utils.js';
 
 export const user = readable([], set => {
@@ -22,6 +22,11 @@ export const users = readable([], set => {
 
 	return () => {};
 });
+
+export const usersMap = derived(
+	users,
+	$users => new Map($users.map(user => [user.id, user]))
+);
 
 const SHOUTOUTS_REFRESH_INTERVAL = 60000;
 

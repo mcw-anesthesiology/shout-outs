@@ -21,3 +21,11 @@ Users can delete shout-outs they submitted using the red `×` in the
 upper-right, and WordPress administrators can delete any shout-out.
 
 Use the `[shoutouts-feed /]` shortcode to add to any block, page, or post.
+
+## List
+
+![Shoutouts list](screenshots/shoutouts-list.png)
+
+A complete list of all submitted shout-outs.
+
+Use the `[shoutouts-list /]` to add to any block, page, or post.

@@ -11,7 +11,7 @@ export function getNonce() {
 }
 
 const headers = {
-	'Content-Type': 'application/json'
+	'Content-Type': 'application/json',
 };
 
 const nonce = getNonce();
@@ -21,5 +21,11 @@ if (nonce) {
 
 export const fetchConfig = {
 	headers,
-	credentials: 'same-origin'
+	credentials: 'same-origin',
 };
+
+export function parseDate(date) {
+	const d = new Date(date);
+	d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+	return d;
+}
