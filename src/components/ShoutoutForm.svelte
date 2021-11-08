@@ -58,7 +58,7 @@
 	{#if !anonymous}
 		<label>
 			From
-			<input type="text" bind:value={createdByWritein} placeholder={$user?.name ?? ''} disabled={submission} required />
+			<input type="text" bind:value={createdByWritein} placeholder={$user?.name ?? ''} disabled={submission} required={!$user} />
 		</label>
 	{/if}
 
