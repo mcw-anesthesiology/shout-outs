@@ -119,15 +119,16 @@ class MCWAnesthShoutOuts {
 		$charsetCollate = $wpdb->get_charset_collate();
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-		$sql = "CREATE TABLE IF NOT EXISTS {$shoutouts} (
-			id bigint(20) NOT NULL AUTO_INCREMENT,
+		$sql = "create table if not exists {$shoutouts} (
+			id bigint(20) not null auto_increment,
 			recipient_id bigint(20),
 			recipient_writein varchar(255),
-			message text NOT NULL,
-			created_by bigint(20) NOT NULL,
-			created_at datetime NOT NULL,
-			updated_at datetime NOT NULL,
-			PRIMARY KEY  (id)
+			message text not null,
+			created_by bigint(20) not null,
+			anonymous boolean not null default true,
+			created_at datetime not null,
+			updated_at datetime not null,
+			primary key  (id)
 		) {$charsetCollate}";
 		dbDelta($sql);
 	}

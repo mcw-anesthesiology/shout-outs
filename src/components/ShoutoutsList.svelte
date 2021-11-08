@@ -20,6 +20,7 @@
 	<table>
 		<thead>
 			<tr>
+				<th>Submitter</th>
 				<th>Recipient</th>
 				<th>Message</th>
 				<th>Submitted</th>
@@ -28,6 +29,7 @@
 		<tbody>
 			{#each shoutouts as shoutout}
 				<tr>
+					<th>{getSubmitter($usersMap, shoutout)}</th>
 					<th>{getRecipient($usersMap, shoutout)}</th>
 					<td>{shoutout.message}</td>
 					<td><RichDate date={shoutout.created_at} showTime /></td>
@@ -88,7 +90,7 @@
 
 <script>
 	import { usersMap } from '../stores.js';
-	import { parseDate, BASE_URL, fetchConfig } from '../utils.js'
+	import { parseDate, parseBoolString, BASE_URL, fetchConfig } from '../utils.js'
 	import { formatDateTimeRFC3339 } from '../formatters.js';
 
 	import RichDate from './RichDate.svelte';
@@ -114,6 +116,21 @@
 			});
 	}
 
+	function getSubmitter($usersMap, shoutout) {
+		if (parseBoolString(shoutout.anonymous)) {
+			return 'Anonymous';
+		}
+
+		if (shoutout.created_by) {
+			const submitter = $usersMap.get(Number(shoutout.created_by));
+			if (submitter) {
+				return submitter.name;
+			}
+		}
+
+		return 'Unknown';
+	}
+
 	function getRecipient($usersMap, shoutout) {
 		if (shoutout.recipient_id) {
 			const recipient = $usersMap.get(Number(shoutout.recipient_id));
@@ -135,8 +152,9 @@
 
 	let csv;
 	$: csv = [
-		'Recipient,Message,Submitted',
+		'Submitter,Recipient,Message,Submitted',
 		...shoutouts.map(shoutout => [
+				getSubmitter($usersMap, shoutout),
 				getRecipient($usersMap, shoutout),
 				shoutout.message,
 				formatDateTimeRFC3339(parseDate(shoutout.created_at)),

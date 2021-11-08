@@ -14,6 +14,7 @@ class ShoutOutController {
 		'recipient_writein',
 		'message',
 		'created_by',
+		'anonymous',
 		'created_at',
 		'updated_at'
 	];
@@ -21,7 +22,7 @@ class ShoutOutController {
 		'message'
 	];
 	const JSON_COLUMNS = [];
-	const BOOLEAN_COLUMNS = [];
+	const BOOLEAN_COLUMNS = ['anonymous'];
 
 	public static function handleRequest($request) {
 		switch ($request->get_method()) {

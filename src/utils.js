@@ -24,6 +24,12 @@ export const fetchConfig = {
 	credentials: 'same-origin',
 };
 
+export function parseBoolString(s) {
+	if (s === '0' || s === 'false') return false;
+
+	return Boolean(s);
+}
+
 export function parseDate(date) {
 	const d = new Date(date);
 	d.setMinutes(d.getMinutes() - d.getTimezoneOffset());

@@ -5,6 +5,12 @@
 			<th>To</th>
 			<td class="recipient">{recipient}</td>
 		</tr>
+		{#if !anonymous && submitter}
+			<tr>
+				<th>From</th>
+				<td class="submitter">{submitter}</td>
+			</tr>
+		{/if}
 		<tr>
 			<th>For</th>
 			<td class="message">{message}</td>
@@ -113,26 +119,33 @@
 </style>
 
 <script>
-	import { user, users } from '../stores.js';
-	import { BASE_URL, fetchConfig } from '../utils.js';
+	import { user, usersMap } from '../stores.js';
+	import { parseBoolString, BASE_URL, fetchConfig } from '../utils.js';
 
 	export let id, recipient_id, recipient_writein, message, created_by, created_at, updated_at;
+	let anonymous, anonymousInput;
+	export { anonymousInput as anonymous };
 
-	let allUsers = [];
+	$: anonymous = parseBoolString(anonymousInput);
+
 	let loadingUsers;
-	$: loadingUsers = allUsers.length === 0;
-
-	users.subscribe(users => {
-		allUsers = users;
-	});
+	$: loadingUsers = $usersMap.size === 0;
 
 	let deleting;
+
+	let recipient, submitter;
 
 	$: recipient = recipient_id
 		? loadingUsers
 			? 'Loading users...'
-			: (allUsers.find(u => u.id == recipient_id) || {}).name || ''
+			: ($usersMap.get(Number(recipient_id)) || {}).name || ''
 		: recipient_writein;
+
+	$: submitter = anonymous
+		? null
+		: loadingUsers
+			? 'Loading users...'
+			: ($usersMap.get(Number(created_by)) || {}).name || '';
 
 	function handleDelete() {
 		if (id) {

@@ -6,7 +6,7 @@
 			<label>
 				Select name
 				{#if supportsCssVars}
-					<Select {items} bind:selectedValue={selectedRecipient}
+					<Select {items} bind:value={selectedRecipient}
 						isDisabled={submitting}
 						noOptionsMessage="Loading recipient list..."
 					/>
@@ -28,7 +28,7 @@
 
 			<label>
 				Write-in
-				<input type="text" name="recipient_writein" bind:value={recipient_writein} disabled={submitting} />
+				<input type="text" name="recipient_writein" bind:value={recipient_writein} disabled={submitting || selectedRecipient} />
 			</label>
 		</div>
 
@@ -48,6 +48,11 @@
 	<label>
 		I'm sending them a shout-out for
 		<textarea name="message" bind:value={message} disabled={submitting}></textarea>
+	</label>
+
+	<label>
+		<input type="checkbox" bind:checked={anonymous} />
+		Submit anonymously
 	</label>
 
 	{#if submitting}
@@ -129,7 +134,7 @@
 		height: var(--height, 42px);
 	}
 
-	label > input,
+	label > input:not([type="checkbox"]),
 	label > textarea,
 	label > select {
 		box-sizing: border-box;
@@ -156,6 +161,7 @@
 
 	let form;
 	let recipient_id, recipient_writein, message = '';
+	let anonymous = true;
 	let selectedRecipient;
 
 	$: if (supportsCssVars && selectedRecipient) {
@@ -180,6 +186,7 @@
 		submission = null;
 
 		form.reset();
+		anonymous = true;
 	}
 
 	function handleSubmit(event) {
@@ -192,7 +199,8 @@
 			body: JSON.stringify({
 				recipient_id,
 				recipient_writein,
-				message
+				message,
+				anonymous
 			})
 		}).then(r => {
 			if (!r.ok) {
