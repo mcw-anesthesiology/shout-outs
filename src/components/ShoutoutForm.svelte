@@ -7,12 +7,12 @@
 				Select name
 				{#if supportsCssVars}
 					<Select {items} bind:value={selectedRecipient}
-						isDisabled={submitting}
+						isDisabled={submission}
 						noOptionsMessage="Loading recipient list..."
 					/>
 				{:else}
 					<select name="recipient_id" bind:value={recipient_id}
-						disabled={submitting}
+						disabled={submission}
 					>
 						<option value=""></option>
 						{#each items as item}
@@ -28,7 +28,7 @@
 
 			<label>
 				Write-in
-				<input type="text" name="recipient_writein" bind:value={recipient_writein} disabled={submitting || selectedRecipient} />
+				<input type="text" name="recipient_writein" bind:value={recipient_writein} disabled={submission || selectedRecipient} />
 			</label>
 		</div>
 
@@ -47,17 +47,24 @@
 
 	<label>
 		I'm sending them a shout-out for
-		<textarea name="message" bind:value={message} disabled={submitting}></textarea>
+		<textarea name="message" bind:value={message} disabled={submission} required></textarea>
 	</label>
 
 	<label>
-		<input type="checkbox" bind:checked={anonymous} />
+		<input type="checkbox" bind:checked={anonymous} disabled={submission} />
 		Submit anonymously
 	</label>
 
-	{#if submitting}
+	{#if !anonymous}
+		<label>
+			From
+			<input type="text" bind:value={createdByWritein} placeholder={$user?.name ?? ''} disabled={submission} required />
+		</label>
+	{/if}
+
+	{#if submission}
 		{#await submission}
-			<span>Submitting</span>
+			<span>Submitting...</span>
 		{:then}
 			<span>Successfully submitted!</span>
 
@@ -69,12 +76,12 @@
 				Sorry, there was a problem submitting your shout-out.
 			</span>
 
-			<button type="submit" disabled={!isComplete || submitting}>
+			<button type="submit" disabled={!isComplete}>
 				Try again
 			</button>
 		{/await}
 	{:else}
-		<button type="submit" disabled={!isComplete || submitting}>
+		<button type="submit" disabled={!isComplete}>
 			Shout-out!
 		</button>
 	{/if}
@@ -85,8 +92,8 @@
 		padding: 0.5em;
 	}
 
-	fieldset {
-		margin-bottom: 1em;
+	form > * ~ * {
+		margin-top: 1em;
 	}
 
 	form > button {
@@ -134,6 +141,10 @@
 		height: var(--height, 42px);
 	}
 
+	label {
+		display: block;
+	}
+
 	label > input:not([type="checkbox"]),
 	label > textarea,
 	label > select {
@@ -146,7 +157,7 @@
 <script>
 	import Select from 'svelte-select';
 
-	import { users } from '../stores.js';
+	import { user, users } from '../stores.js';
 	import { BASE_URL, fetchConfig } from '../utils.js';
 
 	let supportsCssVars = window.CSS && window.CSS.supports('color', 'var(--test)');
@@ -162,6 +173,7 @@
 	let form;
 	let recipient_id, recipient_writein, message = '';
 	let anonymous = true;
+	let createdByWritein;
 	let selectedRecipient;
 
 	$: if (supportsCssVars && selectedRecipient) {
@@ -170,19 +182,19 @@
 		recipient_id = undefined;
 	}
 
-	let isComplete, hasRecipient;
+	let isComplete, hasRecipient, hasTooManyRecipients, hasCreatedBy;
 	$: hasRecipient = recipient_id || recipient_writein;
 	$: hasTooManyRecipients = recipient_id && recipient_writein;
-	$: isComplete = hasRecipient && !hasTooManyRecipients && message;
+	$: hasCreatedBy = anonymous || $user || createdByWritein;
+	$: isComplete = hasRecipient && !hasTooManyRecipients && hasCreatedBy && message;
 
-	let submitting = false, submission;
+	let submission;
 
 	function handleReset() {
 		selectedRecipient = null;
 		recipient_id = undefined;
 		recipient_writein = undefined;
 		message = '';
-		submitting = false;
 		submission = null;
 
 		form.reset();
@@ -191,17 +203,24 @@
 
 	function handleSubmit(event) {
 		event.preventDefault();
-		submitting = true;
+
+		if (!isComplete) return;
+
+		const body = {
+			recipient_id,
+			recipient_writein,
+			message,
+			anonymous
+		};
+
+		if (!anonymous && createdByWritein) {
+			body.created_by_writein = createdByWritein;
+		}
 
 		submission = fetch(`${BASE_URL}/shoutouts`, {
 			...fetchConfig,
 			method: 'POST',
-			body: JSON.stringify({
-				recipient_id,
-				recipient_writein,
-				message,
-				anonymous
-			})
+			body: JSON.stringify(body)
 		}).then(r => {
 			if (!r.ok) {
 				throw new Error(r.statusText);

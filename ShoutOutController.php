@@ -14,6 +14,7 @@ class ShoutOutController {
 		'recipient_writein',
 		'message',
 		'created_by',
+		'created_by_writein',
 		'anonymous',
 		'created_at',
 		'updated_at'
@@ -63,11 +64,14 @@ class ShoutOutController {
 
 	static function transformShoutout($shoutout) {
 		$shoutout->anonymous = boolval($shoutout->anonymous);
-		$shoutout->recipient_id = intval($shoutout->recipient_id);
+
+		if (!empty($shoutout->recipient_id)) {
+			$shoutout->recipient_id = intval($shoutout->recipient_id);
+		}
 
 		if ($shoutout->anonymous) {
 			$shoutout->created_by = null;
-		} else {
+		} else if (!empty($shoutout->created_by)) {
 			$shoutout->created_by = intval($shoutout->created_by);
 		}
 
@@ -150,13 +154,18 @@ class ShoutOutController {
 			}
 		}
 
+		$params = static::getParams($request->get_params());
+
 		$user = wp_get_current_user();
+		if ($user && $user->ID) {
+			$params['created_by'] = $user->ID;
+		}
+
 		$table = MCWAnesthShoutOuts::getTableName(static::TABLE);
 		$wpdb->insert($table,
 			array_merge(
-				static::getParams($request->get_params()),
+				$params,
 				[
-					'created_by' => $user->ID,
 					'created_at' => date('c'),
 					'updated_at' => date('c')
 				]

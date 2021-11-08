@@ -46,15 +46,6 @@ class MCWAnesthShoutOuts {
 
 	public function initRestApi() {
 		remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
-		add_filter('rest_pre_dispatch', function($result, $server, $request) {
-			if (self::matchesNamespace($request->get_route())) {
-				$user = wp_get_current_user();
-				if (!$user || !$user->ID)
-					return new WP_Error('unauthorized', 'Unauthorized', ['status' => 401]);
-			}
-
-			return $result;
-		}, 10, 4);
 
 		add_filter('rest_pre_serve_request', function($served, $response, $request, $server) {
 			if (self::matchesNamespace($request->get_route())) {
@@ -77,6 +68,10 @@ class MCWAnesthShoutOuts {
 			'methods' => ['GET'],
 			'callback' => function($request) {
 				$user = wp_get_current_user();
+
+				if (!$user || !$user->ID) {
+					return null;
+				}
 
 				$return = self::extractUserData($user);
 
@@ -124,7 +119,8 @@ class MCWAnesthShoutOuts {
 			recipient_id bigint(20),
 			recipient_writein varchar(255),
 			message text not null,
-			created_by bigint(20) not null,
+			created_by bigint(20),
+			created_by_writein varchar(255),
 			anonymous boolean not null default true,
 			created_at datetime not null,
 			updated_at datetime not null,

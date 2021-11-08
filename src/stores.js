@@ -8,6 +8,9 @@ export const user = readable([], set => {
 		.then(r => r.json())
 		.then(user => {
 			set(user);
+		})
+		.catch(err => {
+			set(null);
 		});
 
 	return () => {};

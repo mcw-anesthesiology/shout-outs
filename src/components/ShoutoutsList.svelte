@@ -121,6 +121,10 @@
 			return 'Anonymous';
 		}
 
+		if (shoutout.created_by_writein) {
+			return shoutout.created_by_writein;
+		}
+
 		if (shoutout.created_by) {
 			const submitter = $usersMap.get(shoutout.created_by);
 			if (submitter) {

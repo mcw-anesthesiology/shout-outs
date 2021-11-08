@@ -122,7 +122,7 @@
 	import { user, usersMap } from '../stores.js';
 	import { BASE_URL, fetchConfig } from '../utils.js';
 
-	export let id, recipient_id, recipient_writein, message, created_by, anonymous, created_at, updated_at;
+	export let id, recipient_id, recipient_writein, message, created_by, created_by_writein, anonymous, created_at, updated_at;
 
 	let loadingUsers;
 	$: loadingUsers = $usersMap.size === 0;
@@ -139,9 +139,11 @@
 
 	$: submitter = anonymous
 		? null
-		: loadingUsers
-			? 'Loading users...'
-			: ($usersMap.get(created_by) || {}).name || '';
+		: created_by_writein
+			? created_by_writein
+			: loadingUsers
+				? 'Loading users...'
+				: ($usersMap.get(created_by) || {}).name || '';
 
 	function handleDelete() {
 		if (id) {
