@@ -61,13 +61,17 @@ class ShoutOutController {
 			);
 	}
 
-	static function decodeJsonCols(&$row) {
-		foreach ($row as $key => $val) {
-			if (in_array($key, static::JSON_COLUMNS))
-				$row[$key] = json_decode($val);
+	static function transformShoutout($shoutout) {
+		$shoutout->anonymous = boolval($shoutout->anonymous);
+		$shoutout->recipient_id = intval($shoutout->recipient_id);
+
+		if ($shoutout->anonymous) {
+			$shoutout->created_by = null;
+		} else {
+			$shoutout->created_by = intval($shoutout->created_by);
 		}
 
-		return $row;
+		return $shoutout;
 	}
 
 	public static function get($request) {
@@ -78,10 +82,10 @@ class ShoutOutController {
 		$id = $request->get_param('id');
 		if (!empty($id)) {
 			$query = "SELECT * FROM {$table} WHERE id = %d";
-			$policy = $wpdb->get_row($wpdb->prepare($query, $id));
+			$shoutout = $wpdb->get_row($wpdb->prepare($query, $id));
 
-			if (!empty($policy))
-				return self::decodeJsonCols($policy);
+			if (!empty($shoutout))
+				return self::transformShoutout($shoutout);
 
 			return new WP_Error('not-found', 'Not found', ['status' => 404]);
 		}
@@ -122,22 +126,7 @@ class ShoutOutController {
 			$query = $wpdb->prepare($query, $vals);
 		}
 
-		$results = $wpdb->get_results($query, ARRAY_A);
-
-		if (!empty(static::JSON_COLUMNS)) {
-			foreach ($results as &$row) {
-				self::decodeJsonCols($row);
-			}
-		}
-
-		$user = wp_get_current_user();
-		foreach ($results as &$result) {
-			if (in_array('administrator', $user->roles) && $result['created_by'] != $user->ID) {
-				unset($result['created_by']);
-			}
-		}
-
-		return $results;
+		return array_map('MCWAnesthShoutOuts\ShoutOutController::transformShoutout', $wpdb->get_results($query));
 	}
 
 	public static function post($request) {
@@ -175,7 +164,7 @@ class ShoutOutController {
 		);
 
 		$query = "SELECT * FROM {$table} WHERE id = %d";
-		return self::decodeJsonCols($wpdb->get_row($wpdb->prepare($query, [$wpdb->insert_id]), ARRAY_A));
+		return self::transformShoutout($wpdb->get_row($wpdb->prepare($query, [$wpdb->insert_id])));
 	}
 
 	public static function patch($request) {
@@ -217,7 +206,7 @@ class ShoutOutController {
 		}
 
 		$query = "SELECT * FROM {$table} WHERE id = %d";
-		return self::decodeJsonCols($wpdb->get_row($wpdb->prepare($query, [$id]), ARRAY_A));
+		return self::transformShoutout($wpdb->get_row($wpdb->prepare($query, [$id])));
 	}
 
 	public static function delete($request) {

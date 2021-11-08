@@ -120,13 +120,9 @@
 
 <script>
 	import { user, usersMap } from '../stores.js';
-	import { parseBoolString, BASE_URL, fetchConfig } from '../utils.js';
+	import { BASE_URL, fetchConfig } from '../utils.js';
 
-	export let id, recipient_id, recipient_writein, message, created_by, created_at, updated_at;
-	let anonymous, anonymousInput;
-	export { anonymousInput as anonymous };
-
-	$: anonymous = parseBoolString(anonymousInput);
+	export let id, recipient_id, recipient_writein, message, created_by, anonymous, created_at, updated_at;
 
 	let loadingUsers;
 	$: loadingUsers = $usersMap.size === 0;
@@ -138,14 +134,14 @@
 	$: recipient = recipient_id
 		? loadingUsers
 			? 'Loading users...'
-			: ($usersMap.get(Number(recipient_id)) || {}).name || ''
+			: ($usersMap.get(recipient_id) || {}).name || ''
 		: recipient_writein;
 
 	$: submitter = anonymous
 		? null
 		: loadingUsers
 			? 'Loading users...'
-			: ($usersMap.get(Number(created_by)) || {}).name || '';
+			: ($usersMap.get(created_by) || {}).name || '';
 
 	function handleDelete() {
 		if (id) {

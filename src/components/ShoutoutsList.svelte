@@ -90,7 +90,7 @@
 
 <script>
 	import { usersMap } from '../stores.js';
-	import { parseDate, parseBoolString, BASE_URL, fetchConfig } from '../utils.js'
+	import { parseDate, BASE_URL, fetchConfig } from '../utils.js'
 	import { formatDateTimeRFC3339 } from '../formatters.js';
 
 	import RichDate from './RichDate.svelte';
@@ -117,12 +117,12 @@
 	}
 
 	function getSubmitter($usersMap, shoutout) {
-		if (parseBoolString(shoutout.anonymous)) {
+		if (shoutout.anonymous) {
 			return 'Anonymous';
 		}
 
 		if (shoutout.created_by) {
-			const submitter = $usersMap.get(Number(shoutout.created_by));
+			const submitter = $usersMap.get(shoutout.created_by);
 			if (submitter) {
 				return submitter.name;
 			}
@@ -133,7 +133,7 @@
 
 	function getRecipient($usersMap, shoutout) {
 		if (shoutout.recipient_id) {
-			const recipient = $usersMap.get(Number(shoutout.recipient_id));
+			const recipient = $usersMap.get(shoutout.recipient_id);
 			if (recipient) {
 				return recipient.name;
 			}
