@@ -1,7 +1,6 @@
 # Shout-outs!
 
-A simple WordPress plugin for giving anonymous shout-outs to others for all to
-see.
+A simple WordPress plugin for giving shout-outs to others for all to see.
 
 ## Form
 
@@ -9,6 +8,8 @@ see.
 
 Supports selecting registered WordPress users from a list, or entering a
 write-in if the recipient is anonymous, unknown, or a group.
+Submissions are anonymous by default, but the submitter can opt to show their
+name if logged in, or enter a name if desired or if not logged in.
 
 Use the `[shoutouts-form /]` shortcode to add to any block, page, or post.
 
@@ -28,4 +29,4 @@ Use the `[shoutouts-feed /]` shortcode to add to any block, page, or post.
 
 A complete list of all submitted shout-outs.
 
-Use the `[shoutouts-list /]` to add to any block, page, or post.
+Use the `[shoutouts-list /]` shortcode to add to any block, page, or post.
