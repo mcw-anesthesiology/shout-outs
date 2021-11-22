@@ -1,6 +1,7 @@
 <?php
 /*
 Plugin Name: MCW Anesthesiology Shout-outs
+Description: A simple WordPress plugin for giving shout-outs to others for all to see.
 Author: Jacob Mischka
 Version: 0.1.0
 License: GPL-3.0
