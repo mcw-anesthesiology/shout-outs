@@ -86,7 +86,7 @@ class MCWAnesthShoutOuts {
 		register_rest_route(self::API_NAMESPACE, '/users', [
 			'methods' => ['GET'],
 			'callback' => function($request) {
-				$users = get_users();
+				$users = get_users(['role__not_in' => ['disabled', 'inactive']]);
 				$users = array_map([$this, 'extractUserData'], array_values($users));
 
 				usort($users, function ($a, $b) {
