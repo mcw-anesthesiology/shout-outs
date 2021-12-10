@@ -46,7 +46,7 @@
 	</fieldset>
 
 	<label>
-		I'm sending them a shout-out for
+		{messageLabel}
 		<textarea name="message" bind:value={message} disabled={submission} required></textarea>
 	</label>
 
@@ -82,7 +82,7 @@
 		{/await}
 	{:else}
 		<button type="submit" disabled={!isComplete}>
-			Shout-out!
+			{submitButtonText}
 		</button>
 	{/if}
 </form>
@@ -159,6 +159,9 @@
 
 	import { user, users } from '../stores.js';
 	import { BASE_URL, fetchConfig } from '../utils.js';
+
+	export let submitButtonText = 'Shout-out!';
+	export let messageLabel = "I'm sending them a shout-out for";
 
 	let supportsCssVars = window.CSS && window.CSS.supports('color', 'var(--test)');
 

@@ -149,8 +149,15 @@ class MCWAnesthShoutOuts {
 
 	function shoutouts_form_shortcode($atts) {
 		self::enqueueAssets();
+		$dataset = '';
+		foreach (['submit-button-text', 'message-label'] as $key) {
+			if (key_exists($key, $atts)) {
+				$val = htmlspecialchars($atts[$key], ENT_QUOTES);
+				$dataset .= " data-{$key}='{$val}'";
+			}
+		}
 
-		return '<div id="mcw-anesth-shoutouts-form"></div>';
+		return "<div id='mcw-anesth-shoutouts-form' {$dataset}></div>";
 	}
 
 	function shoutouts_list_shortcode($atts) {

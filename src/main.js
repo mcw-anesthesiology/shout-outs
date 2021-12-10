@@ -19,8 +19,13 @@ if (shoutoutsFeed) {
 }
 
 if (shoutoutsForm) {
+	let { submitButtonText, messageLabel } = shoutoutsForm.dataset;
 	new ShoutoutForm({
 		target: shoutoutsForm,
+		props: {
+			submitButtonText,
+			messageLabel,
+		},
 	});
 }
 

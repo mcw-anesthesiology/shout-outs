@@ -13,6 +13,10 @@ name if logged in, or enter a name if desired or if not logged in.
 
 Use the `[shoutouts-form /]` shortcode to add to any block, page, or post.
 
+The submit button text can be customized by adding a `submit-button-text`
+property to the shortcode, and the message textarea label can be customized
+using a `message-label` property.
+
 ## Feed
 
 ![Shoutouts feed](screenshots/shoutouts-feed.png)
